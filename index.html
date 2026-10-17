@@ -1,0 +1,2176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next Steps | Client Profile Assessment</title>
+
+<!-- PDF libraries: internet connection required for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+:root {
+  --navy: #0f2b4c;
+  --blue: #1769aa;
+  --light-blue: #eaf3fb;
+  --border: #d5e0eb;
+  --text: #263648;
+  --muted: #64748b;
+  --green: #24734b;
+  --brown: #81512d;
+  --red: #b42318;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #f2f6fa;
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+button, input, select, textarea { font: inherit; }
+
+button {
+  border: 0;
+  border-radius: 6px;
+  padding: 10px 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.primary { background: var(--navy); color: white; }
+.secondary { background: var(--light-blue); color: var(--navy); }
+.success { background: var(--green); color: white; }
+.danger { background: #fff0ef; color: var(--red); }
+
+.small-btn {
+  padding: 6px 9px;
+  font-size: 12px;
+  margin: 2px;
+}
+
+.topbar {
+  background: var(--navy);
+  color: white;
+  padding: 14px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  background: white;
+  border-radius: 6px;
+  padding: 3px;
+  flex-shrink: 0;
+}
+
+.brand h1 { margin: 0; font-size: 21px; }
+.brand p { margin: 3px 0 0; color: #020e1a; }
+
+#recordCount {
+  font-size: 12px;
+  color: #020508;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 22px auto;
+  padding: 0 16px;
+}
+
+
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #0f2b4c08;
+}
+
+.section-title {
+  background: var(--navy);
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.section-body { padding: 18px; }
+
+.subheading {
+  font-weight: 700;
+  color: var(--navy);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 7px;
+  margin: 5px 0 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.field { min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+
+label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #34465a;
+}
+
+.required { color: #c62828; }
+
+input, select, textarea {
+  width: 100%;
+  border: 1px solid #cbd7e3;
+  border-radius: 6px;
+  padding: 10px;
+  background: white;
+  color: var(--text);
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px #1769aa18;
+}
+
+input:disabled, select:disabled {
+  background: #eef2f6;
+  color: #718096;
+}
+
+textarea { min-height: 100px; resize: vertical; }
+
+.help {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.step-page { display: none; }
+.step-page.active { display: block; }
+
+.progress-card {
+  padding: 15px 18px;
+  margin-bottom: 16px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.progress-title {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: #e3ebf3;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 16.6667%;
+  background: var(--blue);
+  transition: width .2s ease;
+}
+
+.step-dots {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin-top: 13px;
+}
+
+.step-dot {
+  border-radius: 5px;
+  background: #eef2f6;
+  color: #64748b;
+  text-align: center;
+  padding: 7px 3px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.step-dot.current {
+  background: var(--navy);
+  color: white;
+}
+
+.step-dot.completed {
+  background: #dff2e7;
+  color: #17643d;
+}
+
+.education-level {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 15px;
+  background: #fbfdff;
+}
+
+.level-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.pill {
+  background: var(--light-blue);
+  color: var(--navy);
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.expense-title {
+  background: var(--green);
+  color: white;
+  padding: 10px 14px;
+  font-weight: 700;
+  margin: 0 0 14px;
+  border-radius: 5px;
+}
+
+.remarks-title {
+  background: var(--brown);
+  color: white;
+  padding: 10px 14px;
+  font-weight: 700;
+  margin: 18px 0 14px;
+  border-radius: 5px;
+}
+
+.step-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0 22px;
+}
+
+.nav-left, .nav-right {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#status {
+  margin-bottom: 14px;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.hidden { display: none !important; }
+
+.records-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.records-head h2 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 19px;
+}
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 700px; }
+th, td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+th { background: var(--light-blue); color: var(--navy); }
+td { font-size: 13px; }
+
+.empty {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+}
+
+.footer-note {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+  padding: 8px 0 22px;
+}
+
+@media (max-width: 760px) {
+  .grid, .grid.two { grid-template-columns: 1fr; }
+  .topbar { padding: 13px; }
+  .brand h1 { font-size: 18px; }
+  .container { padding: 0 10px; }
+  .section-body { padding: 12px; }
+  .step-dot { font-size: 9px; }
+  .step-navigation { align-items: stretch; }
+  .step-navigation button { padding: 10px; }
+}
+
+@media print {
+  body { background: white; }
+  .topbar, .toolbar, .notice, #recordsCard,
+  .step-navigation, .progress-card, #status,
+  .footer-note { display: none !important; }
+  .container { max-width: none; margin: 0; padding: 0; }
+  .step-page { display: block !important; }
+  .card { box-shadow: none; break-inside: avoid; }
+}
+
+/* Hide manual CSV export buttons */
+#csvBtn,
+#csvBtnBottom {
+  display: none !important;
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+</header>
+
+<main class="container">
+  <div class="brand">
+    <img id="companyLogo" src="logo.png" alt="Next Steps Study logo">
+    <div>
+      <h1>Next Steps </h1>
+      <p>Student Profile Assessment</p>
+    </div>
+  </div>
+  <div id="recordCount">Saved assessments: 0</div>
+
+
+  <div class="toolbar">
+    <button type="button" class="primary" id="newBtn">+ New Assessment</button>
+    <button type="button" class="success" id="saveBtn">Save Assessment</button>
+    <button type="button" class="secondary" id="pdfBtn">Download PDF</button>
+    <button type="button" class="secondary" id="csvBtn">Export All Records (CSV)</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <div class="progress-card">
+    <div class="progress-top">
+      <span class="progress-title" id="progressTitle">Page 1 of 6 — Personal Information</span>
+      <span id="progressPercent">17%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="step-dots" id="stepDots">
+      <div class="step-dot current">1. Personal</div>
+      <div class="step-dot">2. Education</div>
+      <div class="step-dot">3. English</div>
+      <div class="step-dot">4. Destinations</div>
+      <div class="step-dot">5. Expenses</div>
+      <div class="step-dot">6. Remarks</div>
+    </div>
+  </div>
+
+  <form id="assessmentForm" novalidate>
+    <input type="hidden" id="recordId">
+
+    <!-- PAGE 1: PERSONAL INFORMATION -->
+    <section class="step-page active" data-page="1">
+      <div class="card">
+        <div class="section-title">1. Personal Information</div>
+        <div class="section-body">
+          <div class="grid two">
+            <div class="field">
+              <label for="clientName">Name <span class="required">*</span></label>
+              <input id="clientName" name="Client Name" required>
+            </div>
+
+            <div class="field">
+              <label for="assessmentDate">Date &amp; Time (Automatically Input)</label>
+              <input id="assessmentDate" name="Date & Time" type="datetime-local" step="1" required>
+            </div>
+
+            <div class="field">
+              <label for="mobile">Mobile Number</label>
+              <input id="mobile" name="Mobile Number" type="tel" placeholder="+880...">
+            </div>
+
+            <div class="field">
+              <label for="mobileRelation">Mobile Number Belongs To</label>
+              <select id="mobileRelation" name="Mobile Number Belongs To">
+                <option value="">Select relationship</option>
+                <option>Self</option>
+                <option>Father</option>
+                <option>Mother</option>
+                <option>Brother</option>
+                <option>Uncle</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="counsellor">Counsellor Name</label>
+              <input id="counsellor" name="Counsellor Name">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: EDUCATION -->
+    <section class="step-page" data-page="2">
+      <div class="card">
+        <div class="section-title">2. Educational Qualification</div>
+        <div class="section-body">
+          <p class="help">
+            Select the highest qualification.
+          </p>
+          <div id="educationLevels"></div>
+
+<div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+  <button type="button" class="primary" id="addEducationBtn">
+    + Add More
+  </button>
+</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: ENGLISH TEST -->
+    <section class="step-page" data-page="3">
+      <div class="card">
+        <div class="section-title">3. English Language Proficiency Test</div>
+        <div class="section-body">
+          <div class="grid two">
+            <div class="field full">
+              <label for="englishTest">Test Type</label>
+              <select id="englishTest" name="English Test">
+                <option value="">Select English test</option>
+                <option>IELTS UKVI</option>
+                <option>IELTS</option>
+                <option>PTE UKVI</option>
+                <option>PTE</option>
+                <option>TOEFL iBT Center</option>
+                <option>TOEFL iBT Home Edition</option>
+                <option>ELLT Digital</option>
+                <option>ELLT Global</option>
+                <option>Duolingo</option>
+                <option>OET</option>
+                <option>Without IELTS</option>
+                <option>In Progress</option>
+                <option>Yet to Take</option>
+              </select>
+              <div class="help" id="englishHelp">
+                Choose a test to enter scores.
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="englishOverall">Overall</label>
+              <input id="englishOverall" name="English Overall" placeholder="Score">
+            </div>
+            <div class="field">
+              <label for="englishListening">Listening</label>
+              <input id="englishListening" name="English Listening" placeholder="Score">
+            </div>
+            <div class="field">
+              <label for="englishReading">Reading</label>
+              <input id="englishReading" name="English Reading" placeholder="Score">
+            </div>
+            <div class="field">
+              <label for="englishWriting">Writing</label>
+              <input id="englishWriting" name="English Writing" placeholder="Score">
+            </div>
+            <div class="field">
+              <label for="englishSpeaking">Speaking</label>
+              <input id="englishSpeaking" name="English Speaking" placeholder="Score">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 4: DESTINATIONS + ELIGIBILITY -->
+    <section class="step-page" data-page="4">
+      <div class="card">
+        <div class="section-title">4. Destinations &amp; Preferences</div>
+        <div class="section-body">
+          <div class="grid two">
+            <div class="field">
+              <label for="country">Intended Country</label>
+              <select id="country" name="Intended Country">
+                <option value="">Select country</option>
+                <option>Australia</option>
+                <option>Austria</option>
+                <option>Belgium</option>
+                <option>Canada</option>
+                <option>Cyprus</option>
+                <option>Croatia</option>
+                <option>Denmark</option>
+                <option>Finland</option>
+                <option>France</option>
+                <option>Georgia</option>
+                <option>Germany</option>
+                <option>Greece</option>
+                <option>Hungary</option>
+                <option>Ireland</option>
+                <option>Italy</option>
+                <option>Japan</option>
+                <option>Malta</option>
+                <option>Macedonia</option>
+                <option>Montenegro</option>
+                <option>Netherlands</option>
+                <option>New Zealand</option>
+                <option>Poland</option>
+                <option>Romania</option>
+                <option>Serbia</option>
+                <option>Sweden</option>
+                <option>UK</option>
+                <option>USA</option>
+                <option>Europe</option>
+                <option>Latvia</option>
+              </select>
+              <div class="help">
+                Latvia is included to support the processing-fee rule.
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="courseLevel">Intended Course Level</label>
+              <select id="courseLevel" name="Intended Course Level">
+                <option value="">Select course level</option>
+                <option>Foundation</option>
+                <option>Bachelor</option>
+                <option>Pre-masters</option>
+                <option>Masters-Course Based</option>
+                <option>Masters-Research</option>
+                <option>PhD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Eligibility Assessment</div>
+        <div class="section-body">
+          <div class="grid">
+            <div class="field">
+              <label for="eligibleCourse">Course</label>
+              <input id="eligibleCourse" name="Eligibility Course" placeholder="Type course name">
+            </div>
+            <div class="field">
+              <label for="university">University</label>
+              <input id="university" name="University">
+            </div>
+            <div class="field">
+              <label for="eligibilityTuitionFee">Tuition Fee</label>
+              <input id="eligibilityTuitionFee" name="Eligibility Tuition Fee" placeholder="Amount and currency">
+            </div>
+            <div class="field">
+              <label for="scholarships">Scholarships</label>
+              <input id="scholarships" name="Scholarships" placeholder="Details / amount">
+            </div>
+            <div class="field">
+              <label for="duration">Duration</label>
+              <input id="duration" name="Duration" placeholder="e.g. 1 year">
+            </div>
+            <div class="field">
+              <label for="nextIntake">Next Intake</label>
+              <input id="nextIntake" name="Next Intake" placeholder="e.g. September 2027">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 5: EXPENSES -->
+   
+<section class="step-page" data-page="5">
+  <div class="card">
+    <div class="section-title">5. Approximate Expenses</div>
+
+    <div class="section-body">
+      <p class="help">
+        Enter the amount and currency, for example EUR 150 or BDT 20,000.
+      </p>
+
+      <div class="expense-title">Estimated Expenses</div>
+
+      <div class="grid two">
+
+        <!-- Application Processing Fee -->
+        <div class="field">
+          <label for="applicationProcessingFee">
+            Application Processing Fee
+          </label>
+          <input
+            type="text"
+            id="applicationProcessingFee"
+            name="Application Processing Fee"
+            placeholder="Amount and currency"
+          />
+        </div>
+
+        <!-- University Application Fee -->
+        <div class="field">
+          <label for="universityApplicationFee">
+            University Application Fee
+          </label>
+          <input
+            type="text"
+            id="universityApplicationFee"
+            name="University Application Fee"
+            placeholder="Amount and currency"
+          />
+        </div>
+
+        <!-- Tuition Fee Deposit -->
+        <div class="field">
+          <label for="tuitionDeposit">Tuition Fee Deposit</label>
+          <input
+            type="text"
+            id="tuitionDeposit"
+            name="Tuition Fee Deposit"
+            placeholder="Amount and currency"
+          />
+        </div>
+
+        
+<!-- Insurance Type and Amount -->
+<div class="field">
+  <label for="insuranceType">Insurance Type</label>
+  <select id="insuranceType" name="Insurance Type">
+    <option value="">Select insurance type</option>
+    <option value="Medical Health Insurance">Medical Health Insurance</option>
+    <option value="IHS (UK)">IHS (UK)</option>
+    <option value="SEVIS (USA)">SEVIS (USA)</option>
+    <option value="OSHC (AUS)">OSHC (AUS)</option>
+  </select>
+</div>
+
+<div class="field">
+  <label for="insuranceAmount">Insurance Fee / Amount</label>
+  <input
+    type="text"
+    id="insuranceAmount"
+    name="Insurance Fee Amount"
+    placeholder="e.g. 1,000 or GBP 776"
+  />
+</div>
+
+
+
+        <!-- Embassy / Visa Fee -->
+        <div class="field">
+          <label for="embassyFee">Embassy / Visa Fee</label>
+          <input
+            type="text"
+            id="embassyFee"
+            name="Embassy Visa Fee"
+            placeholder="Amount and currency"
+          />
+        </div>
+
+        <!-- Visa Documentation -->
+        <div class="field">
+          <label for="visaDocumentation">Visa Documentation</label>
+          <input
+            type="text"
+            id="visaDocumentation"
+            name="Visa Documentation"
+            placeholder="Amount and currency"
+          />
+        </div>
+
+        <!-- Service Fee -->
+        <div class="field">
+          <label for="serviceFee">
+            Service Fee (After Visa Approval)
+          </label>
+          <input
+            type="text"
+            id="serviceFee"
+            name="Service Fee After Visa Approval"
+            placeholder="Amount and currency"
+          />
+        </div>
+        <!-- Expense Additional Details -->
+<div class="field full">
+  <label for="expenseAdditionalDetails">Additional Details</label>
+  <textarea
+    id="expenseAdditionalDetails"
+    name="Expense Additional Details"
+    placeholder="Any additional expense information..."
+  ></textarea>
+</div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- PAGE 6: REMARKS -->
+    <section class="step-page" data-page="6">
+      <div class="card">
+        <div class="section-title">6. Remarks &amp; Additional Information</div>
+        <div class="section-body">
+          <div class="remarks-title">Counsellor Remarks</div>
+          <div class="field">
+            <label for="remarks">Remarks</label>
+            <textarea id="remarks" name="Counsellor Remarks"
+              placeholder="Counsellor observations, recommendations, follow-up actions..."></textarea>
+          </div>
+
+          <div class="remarks-title">Additional Details</div>
+          <div class="field">
+            <label for="additionalNotes">Additional Information</label>
+            <textarea id="additionalNotes" name="Additional Details"
+              placeholder="Any other relevant information..."></textarea>
+          </div>
+
+          <div class="notice" style="margin-top:18px">
+            <strong>Before finishing:</strong>
+            Save the assessment to send its details to Google Sheets. You can still
+            download an individual PDF. Local records shown below are stored in this browser.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREVIOUS / NEXT -->
+    <div class="step-navigation">
+      <div class="nav-left">
+        <button type="button" class="secondary" id="previousBtn">← Previous</button>
+      </div>
+      <div class="nav-right">
+        <button type="button" class="secondary" id="clearBtn">Clear Form</button>
+        <button type="button" class="primary" id="nextBtn">Next →</button>
+        <button type="submit" class="success hidden" id="finishBtn">Save Assessment</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- SAVED RECORDS -->
+  <section class="card" id="recordsCard">
+    <div class="section-title">Saved Assessments</div>
+    <div class="section-body">
+      <div class="records-head">
+        <h2>Assessment Records</h2>
+        <button type="button" class="secondary" id="csvBtnBottom">Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Serial No.</th>
+              <th> Name</th>
+              <th>Date &amp; Time</th>
+              <th>Country</th>
+              <th>Counsellor</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody"></tbody>
+        </table>
+      </div>
+      <div class="help">
+        Use Edit to load a saved assessment. Delete removes it from this browser.
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">Next Steps Study · Profile Assessment System</div>
+</main>
+
+<script>
+"use strict";
+
+/* =========================================================
+   COMPANY SETTINGS
+   Change these details to your actual company information.
+========================================================= */
+const COMPANY = {
+  name: "NEXT STEPS ",
+  address: "1/F,Anondo tower, North Dhopadighirpar, Jail Road, Sylhet-3100, Bangladesh",
+  phone: "Phone: 09666912048",
+  whatsapp:"Whatsapp:+880 1984576561",
+  email: "Email: info@nextsteps.study ; apply@nextsteps.study",
+};
+
+const STORAGE_KEY = "nextStepsStudyAssessments_v2";
+
+const pageNames = [
+  "Personal Information",
+  "Educational Qualification",
+  "English Language Proficiency Test",
+  "Destinations & Eligibility Assessment",
+  "Approximate Expenses",
+  "Remarks & Additional Information"
+];
+
+const qualifications = [
+  "Masters", "Kamil", "MBBS", "Bachelor Honours", "Bachelor 3 Years",
+  "Fazil Honours", "Fazil 3 Years", "Diploma 3 Years", "Diploma 4 Years",
+  "A Level", "HSC", "Alim", "O Level", "SSC", "Dakhil",
+  "OTHM Diploma Level 5", "OTHM Diploma Level 4"
+];
+
+const educationFields = [
+  { key: "qualification", label: "Qualification", type: "select" },
+  { key: "major", label: "Major / Subject", type: "text" },
+  { key: "passingYear", label: "Passing Year", type: "text" },
+  { key: "result", label: "Result", type: "text" },
+  { key: "awardingAuthority", label: "Awarding Authority", type: "text" },
+  { key: "additionalDetails", label: "Additional Details", type: "text" }
+];
+
+const nonScoreTests = ["Without IELTS", "In Progress", "Yet to Take"];
+
+const processingFeeCountries = [
+  "Hungary", "Finland", "USA", "Canada", "Denmark", "Latvia", "Europe"
+];
+
+const $ = id => document.getElementById(id);
+const form = $("assessmentForm");
+
+let records = loadRecords();
+let currentPage = 1;
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+function loadRecords() {
+  try {
+    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+function storeRecords() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    return true;
+  } catch (error) {
+    alert("Could not save records. Export a CSV backup and check browser storage.");
+    console.error(error);
+    return false;
+  }
+}
+
+function showStatus(message, error = false) {
+  $("status").textContent = message;
+  $("status").style.color = error ? "#b42318" : "#24734b";
+}
+
+function nowLocalDateTime() {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+    .toISOString().slice(0, 19);
+}
+
+function formatExactDateTime(dateValue) {
+  const d = dateValue ? new Date(dateValue) : new Date();
+  if (Number.isNaN(d.getTime())) return String(dateValue || "").replace("T", " ");
+  return d.toLocaleString(undefined, {
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    hour12: true
+  });
+}
+
+function dateStamp() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function makeSerial() {
+  // Format: SN: YYMMDD001, with a three-digit daily sequence.
+  const prefix = "SN: " + "NS-" + dateStamp().replaceAll("-", "").slice(2);
+  const count = records.filter(r => String(r.serial || "").startsWith(prefix)).length + 1;
+  return prefix + String(count).padStart(3, "0");
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+/* =========================================================
+   SIX-PAGE NAVIGATION
+========================================================= */
+function showPage(pageNumber) {
+  currentPage = Math.min(6, Math.max(1, pageNumber));
+
+  document.querySelectorAll(".step-page").forEach(page => {
+    page.classList.toggle("active", Number(page.dataset.page) === currentPage);
+  });
+
+  $("progressTitle").textContent =
+    `Page ${currentPage} of 6 — ${pageNames[currentPage - 1]}`;
+
+  const percent = Math.round(currentPage / 6 * 100);
+  $("progressPercent").textContent = percent + "%";
+  $("progressBar").style.width = percent + "%";
+
+  document.querySelectorAll(".step-dot").forEach((dot, index) => {
+    dot.classList.toggle("current", index + 1 === currentPage);
+    dot.classList.toggle("completed", index + 1 < currentPage);
+  });
+
+  $("previousBtn").disabled = currentPage === 1;
+  $("nextBtn").classList.toggle("hidden", currentPage === 6);
+  $("finishBtn").classList.toggle("hidden", currentPage !== 6);
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function validateCurrentPage() {
+  if (currentPage === 1) {
+    if (!$("clientName").value.trim()) {
+      showStatus("Please enter the Client Name before continuing.", true);
+      $("clientName").focus();
+      return false;
+    }
+
+    if (!$("assessmentDate").value) {
+      $("assessmentDate").value = nowLocalDateTime();
+    }
+  }
+
+  return true;
+}
+
+$("previousBtn").addEventListener("click", () => showPage(currentPage - 1));
+
+$("nextBtn").addEventListener("click", () => {
+  if (validateCurrentPage()) showPage(currentPage + 1);
+});
+
+/* Clicking a progress step takes the user directly to that page. */
+document.querySelectorAll(".step-dot").forEach((dot, index) => {
+  dot.style.cursor = "pointer";
+  dot.title = "Go to " + pageNames[index];
+  dot.addEventListener("click", () => showPage(index + 1));
+});
+
+/* =========================================================
+   EDUCATION LEVELS AND DEPENDENCIES
+========================================================= */
+
+function renderEducationLevels(savedEntries = null) {
+  const container = $("educationLevels");
+  container.innerHTML = "";
+
+  // Support older saved records that used Level 1, Level 2 and Level 3.
+  if (!Array.isArray(savedEntries)) {
+    savedEntries = [
+      "Level 1", "Level 2", "Level 3"
+    ].map(level => {
+      const old = window._educationRestoreData?.[level];
+      if (!old) return null;
+
+      return Object.fromEntries(
+        educationFields.map(field => [
+          field.label,
+          old[field.label] || ""
+        ])
+      );
+    }).filter(Boolean);
+  }
+
+  if (!savedEntries.length) savedEntries = [{}];
+
+  savedEntries.forEach((entry, index) => {
+    createEducationEntry(entry, index);
+  });
+
+  updateEducationButtons();
+}
+
+function createEducationEntry(entry = {}, index) {
+  const container = $("educationLevels");
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "education-level";
+  wrapper.dataset.educationEntry = "true";
+
+  const heading = document.createElement("div");
+  heading.className = "level-heading";
+
+  const title = document.createElement("span");
+  title.textContent = `Qualification ${index + 1}`;
+
+  const removeBtn = document.createElement("button");
+  removeBtn.type = "button";
+  removeBtn.className = "danger small-btn";
+  removeBtn.textContent = "Remove";
+  removeBtn.addEventListener("click", () => {
+    if (container.querySelectorAll("[data-education-entry]").length <= 1) {
+      alert("At least one qualification entry must remain.");
+      return;
+    }
+
+    wrapper.remove();
+    renumberEducationEntries();
+  });
+
+  heading.append(title, removeBtn);
+  wrapper.appendChild(heading);
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+
+  educationFields.forEach(field => {
+    const box = document.createElement("div");
+    box.className = "field";
+
+    const id = `eduEntry${index}_${field.key}`;
+
+    const label = document.createElement("label");
+    label.htmlFor = id;
+    label.textContent = field.label;
+    box.appendChild(label);
+
+    let control;
+
+    if (field.type === "select") {
+      control = document.createElement("select");
+      control.innerHTML =
+        '<option value="">Select qualification</option>' +
+        qualifications.map(q =>
+          `<option value="${escapeHtml(q)}">${escapeHtml(q)}</option>`
+        ).join("");
+    } else {
+      control = document.createElement("input");
+      control.type = "text";
+      control.placeholder = field.label;
+    }
+
+    control.id = id;
+    control.value = entry[field.label] || "";
+    control.dataset.educationKey = field.key;
+
+    if (field.key === "additionalDetails") {
+      box.classList.add("full");
+    }
+
+    box.appendChild(control);
+    grid.appendChild(box);
+  });
+
+  wrapper.appendChild(grid);
+  container.appendChild(wrapper);
+}
+
+function renumberEducationEntries() {
+  document.querySelectorAll("#educationLevels [data-education-entry]")
+    .forEach((entry, index) => {
+      entry.querySelector(".level-heading span").textContent =
+        `Qualification ${index + 1}`;
+
+      entry.querySelectorAll("[data-education-key]").forEach(control => {
+        control.id = `eduEntry${index}_${control.dataset.educationKey}`;
+        control.removeAttribute("name");
+
+        const label = control.parentElement.querySelector("label");
+        if (label) label.htmlFor = control.id;
+      });
+    });
+
+  updateEducationButtons();
+}
+
+function updateEducationButtons() {
+  const entries = document.querySelectorAll(
+    "#educationLevels [data-education-entry]"
+  );
+
+  entries.forEach(entry => {
+    const removeBtn = entry.querySelector("button");
+    if (removeBtn) removeBtn.disabled = entries.length === 1;
+  });
+}
+
+function resetEducationEntries() {
+  renderEducationLevels([{}]);
+}
+
+$("addEducationBtn").addEventListener("click", () => {
+  const container = $("educationLevels");
+  const index = container.querySelectorAll("[data-education-entry]").length;
+
+  createEducationEntry({}, index);
+  updateEducationButtons();
+});
+
+
+  
+
+
+
+function setEducationLevelEnabled(level, enabled) {
+  $(`educationLevel${level}`).querySelectorAll("input, select").forEach(el => {
+    el.disabled = !enabled;
+  });
+}
+
+function clearEducationLevel(level) {
+  $(`educationLevel${level}`).querySelectorAll("input, select").forEach(el => {
+    el.value = "";
+  });
+}
+
+function updateEducationDependencies() {
+  const hasLevel1 = Boolean($("edu1_qualification").value);
+  const hasLevel2 = Boolean($("edu2_qualification").value);
+
+  setEducationLevelEnabled(2, hasLevel1);
+  setEducationLevelEnabled(3, hasLevel1 && hasLevel2);
+
+  if (!hasLevel1) clearEducationLevel(2);
+  if (!hasLevel2) clearEducationLevel(3);
+}
+
+/* =========================================================
+   ENGLISH TEST RULES
+========================================================= */
+function updateEnglishRules() {
+  const noScores = nonScoreTests.includes($("englishTest").value);
+
+  const scoreIds = [
+    "englishOverall", "englishListening", "englishReading",
+    "englishWriting", "englishSpeaking"
+  ];
+
+  scoreIds.forEach(id => {
+    const field = $(id);
+
+    if (noScores) {
+      field.value = "N/A";
+      field.readOnly = true;
+      field.style.background = "#eef2f6";
+    } else {
+      if (field.value === "N/A") field.value = "";
+      field.readOnly = false;
+      field.style.background = "white";
+    }
+  });
+
+  $("englishHelp").textContent = noScores
+    ? "All English score fields are automatically set to N/A for this selection."
+    : "Enter available scores. Leave any unknown scores blank.";
+}
+
+/* =========================================================
+   EXPENSE RULES
+========================================================= */
+function updateProcessingFee() {
+  // Application Processing Fee is now a regular field on the Expenses page.
+  // Keep it available for every country; there is no conditional wrapper.
+  const field = $("applicationProcessingFee");
+  if (field) field.disabled = false;
+}
+
+/* =========================================================
+   FORM DATA: COLLECT AND RESTORE
+========================================================= */
+
+function getFormData() {
+  const data = {};
+
+  form.querySelectorAll(
+    "input[name], select[name], textarea[name]"
+  ).forEach(el => {
+    if (el.type === "hidden" || el.disabled) return;
+    data[el.name] = el.value.trim();
+  });
+
+  // Save all qualification entries in an array.
+  data.education = Array.from(
+    document.querySelectorAll(
+      "#educationLevels [data-education-entry]"
+    )
+  ).map(entry => {
+    const fields = {};
+
+    educationFields.forEach(field => {
+      const control = entry.querySelector(
+        `[data-education-key="${field.key}"]`
+      );
+
+      fields[field.label] = control ? control.value.trim() : "";
+    });
+
+    return fields;
+  });
+
+  return data;
+}
+
+function setFormData(data) {
+  form.querySelectorAll(
+    "input[name], select[name], textarea[name]"
+  ).forEach(el => {
+    if (el.type === "hidden") return;
+
+    if (Object.prototype.hasOwnProperty.call(data, el.name)) {
+      el.value = data[el.name] ?? "";
+    }
+  });
+
+  let entries = [];
+
+  if (Array.isArray(data.education)) {
+    // New format: any number of qualification entries.
+    entries = data.education;
+  } else if (data.education && typeof data.education === "object") {
+    // Old format: Level 1, Level 2 and Level 3.
+    entries = ["Level 1", "Level 2", "Level 3"]
+      .map(level => data.education[level])
+      .filter(Boolean);
+  }
+
+  renderEducationLevels(entries.length ? entries : [{}]);
+
+  updateEnglishRules();
+  updateProcessingFee();
+}
+
+
+
+
+/* =========================================================
+   SAVE, NEW AND RESET
+========================================================= */
+/* =========================================================
+   GOOGLE SHEETS SYNC
+   Paste your deployed Apps Script Web App URL below.
+========================================================= */
+const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbycQjjKNkynsR3foc9aghPSRlFx1og-VqVc5OxEnrvDA1qvSUyygkrhEdPtqeotiJGQ/exec";
+
+function flattenRecordForSheets(record) {
+  const flat = {
+    "Record ID": record.id || "",
+    "Serial No.": record.serial || "",
+    "Created At": record.createdAt || "",
+    "Updated At": record.updatedAt || ""
+  };
+
+  Object.entries(record.data || {}).forEach(([key, value]) => {
+    if (key === "education" && Array.isArray(value)) {
+      value.forEach((education, index) => {
+        Object.entries(education || {}).forEach(([field, fieldValue]) => {
+          flat[`Qualification ${index + 1} - ${field}`] = fieldValue ?? "";
+        });
+      });
+    } else if (value && typeof value === "object") {
+      flat[key] = JSON.stringify(value);
+    } else {
+      flat[key] = value ?? "";
+    }
+  });
+
+  return flat;
+}
+
+async function sendRecordToGoogleSheets(record) {
+  if (!GOOGLE_SHEETS_WEB_APP_URL ||
+      GOOGLE_SHEETS_WEB_APP_URL.includes("PASTE_YOUR_APPS_SCRIPT")) {
+    throw new Error("Add your deployed Google Apps Script Web App URL in the code first.");
+  }
+
+  // Apps Script web apps commonly require no-cors for a browser POST from
+  // another origin. The request can be sent, but the browser cannot read the
+  // response, so this cannot confirm that Google Sheets accepted the record.
+  await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=UTF-8" },
+    body: JSON.stringify({ action: "upsert", record: {
+      id: record.id,
+      serial: record.serial,
+      createdAt: record.createdAt,
+      updatedAt: record.updatedAt,
+      data: record.data
+    }})
+  });
+}
+
+/* =========================================================
+   SAVE, NEW AND RESET
+========================================================= */
+async function saveAssessment(event) {
+  if (event) event.preventDefault();
+
+  if (!( $("clientName").value.trim() )) {
+    showPage(1);
+    showStatus("Client Name is required.", true);
+    $("clientName").focus();
+    return;
+  }
+
+  const id = $("recordId").value;
+
+  // Keep the automatic date/time captured when the assessment form was opened.
+  if (!$("assessmentDate").value) {
+    $("assessmentDate").value = nowLocalDateTime();
+  }
+
+  const data = getFormData();
+  const existingIndex = records.findIndex(r => r.id === id);
+  let savedRecord;
+
+  if (existingIndex >= 0) {
+    records[existingIndex] = {
+      ...records[existingIndex],
+      data,
+      updatedAt: new Date().toISOString()
+    };
+    savedRecord = records[existingIndex];
+  } else {
+    savedRecord = {
+      id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random()),
+      serial: makeSerial(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      data
+    };
+    records.push(savedRecord);
+    $("recordId").value = savedRecord.id;
+  }
+
+  if (!storeRecords()) return;
+
+  renderRecords();
+  showStatus("Assessment saved in this browser. Sending to Google Sheets…");
+
+  try {
+    await sendRecordToGoogleSheets(savedRecord);
+    showStatus("Save request sent to Google Sheets. Because the browser cannot confirm the response, check the Assessments tab to verify it was saved.");
+  } catch (error) {
+    console.error("Google Sheets submission error:", error);
+    showStatus("Assessment is saved only in this browser. The request to Google Sheets could not be sent. Check the Web App URL and browser console (F12).", true);
+  }
+}
+
+function clearForm() {
+  if (!confirm("Clear the current form? Unsaved changes will be lost.")) return;
+
+  form.reset();
+  $("recordId").value = "";
+  $("assessmentDate").value = nowLocalDateTime();
+
+  resetEducationEntries();
+  updateEnglishRules();
+  updateProcessingFee();
+
+  showPage(1);
+  showStatus("Form cleared. Ready for a new assessment.");
+}
+
+$("assessmentForm").addEventListener("submit", saveAssessment);
+$("saveBtn").addEventListener("click", saveAssessment);
+$("newBtn").addEventListener("click", clearForm);
+$("clearBtn").addEventListener("click", clearForm);
+
+$("englishTest").addEventListener("change", updateEnglishRules);
+$("country").addEventListener("change", updateProcessingFee);
+
+/* =========================================================
+   SAVED RECORDS TABLE
+========================================================= */
+function renderRecords() {
+  const tbody = $("recordsBody");
+
+  $("recordCount").textContent = `Saved assessments: ${records.length}`;
+
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">No saved assessments yet.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = records.slice().reverse().map(record => {
+    const data = record.data || {};
+
+    return `<tr>
+      <td>${escapeHtml(record.serial)}</td>
+      <td>${escapeHtml(data["Client Name"] || "Unnamed client")}</td>
+      <td>${escapeHtml((data["Date & Time"] || "").replace("T", " "))}</td>
+      <td>${escapeHtml(data["Intended Country"] || "")}</td>
+      <td>${escapeHtml(data["Counsellor Name"] || "")}</td>
+      <td>
+        <button type="button" class="secondary small-btn"
+          data-action="edit" data-id="${escapeHtml(record.id)}">Edit</button>
+        <button type="button" class="secondary small-btn"
+          data-action="pdf" data-id="${escapeHtml(record.id)}">PDF</button>
+        <button type="button" class="danger small-btn"
+          data-action="delete" data-id="${escapeHtml(record.id)}">Delete</button>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+$("recordsBody").addEventListener("click", event => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+
+  const record = records.find(r => r.id === button.dataset.id);
+  if (!record) return;
+
+  if (button.dataset.action === "edit") {
+    $("recordId").value = record.id;
+    setFormData(record.data || {});
+    showPage(1);
+    showStatus(`Editing ${record.serial}. Save to update this record.`);
+    return;
+  }
+
+  if (button.dataset.action === "pdf") {
+    makePdf(record);
+    return;
+  }
+
+  if (button.dataset.action === "delete") {
+    const clientName = record.data?.["Client Name"] || "this record";
+
+    if (!confirm(`Delete ${clientName} (${record.serial}) from this browser?`)) return;
+
+    records = records.filter(r => r.id !== record.id);
+
+    if (storeRecords()) {
+      renderRecords();
+      showStatus("Record deleted.");
+    }
+  }
+});
+
+/* =========================================================
+   CSV EXPORT
+========================================================= */
+function csvEscape(value) {
+  let text = String(value ?? "");
+
+  // Protect spreadsheet users from values interpreted as formulas.
+  if (/^[=+\-@]/.test(text)) text = "'" + text;
+
+  return '"' + text.replace(/"/g, '""') + '"';
+}
+
+function flattenRecord(record) {
+  const flat = {
+    "Serial No.": record.serial,
+    "Created At": record.createdAt,
+    "Updated At": record.updatedAt
+  };
+
+  Object.entries(record.data || {}).forEach(([key, value]) => {
+    if (key === "education" && value && typeof value === "object") {
+      Object.entries(value).forEach(([level, fields]) => {
+        Object.entries(fields || {}).forEach(([field, fieldValue]) => {
+          flat[`${level} - ${field}`] = fieldValue;
+        });
+      });
+    } else {
+      flat[key] = value;
+    }
+  });
+
+  return flat;
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+
+function exportCSV(options = {}) {
+  const automatic = options.automatic === true;
+
+  if (!records.length) {
+    if (!automatic) {
+      alert("There are no saved assessments to export.");
+    }
+    return false;
+  }
+
+  const flat = records.map(flattenRecord);
+  const headers = [...new Set(flat.flatMap(row => Object.keys(row)))];
+
+  const lines = [
+    headers.map(csvEscape).join(","),
+    ...flat.map(row =>
+      headers.map(header => csvEscape(row[header] ?? "")).join(",")
+    )
+  ];
+
+  const blob = new Blob(["\uFEFF" + lines.join("\r\n")], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  downloadBlob(
+    blob,
+    `Next-Steps-Assessments-${dateStamp()}.csv`
+  );
+
+  if (!automatic) {
+    showStatus("CSV export downloaded.");
+  }
+
+  return true;
+}
+
+$("csvBtn").addEventListener("click", exportCSV);
+$("csvBtnBottom").addEventListener("click", exportCSV);
+
+/* =========================================================
+   PDF: A4, COMPANY HEADER, LOGO AND FOOTER
+========================================================= */
+
+async function getLogoDataUrl() {
+  const img = $("companyLogo");
+  if (!img) throw new Error('Logo element #companyLogo was not found.');
+
+  // The image is already visible on the page. Decode that exact image before
+  // converting it, instead of relying on a second image-load event.
+  try {
+    if (typeof img.decode === "function") await img.decode();
+    else if (!img.complete || !img.naturalWidth) {
+      await new Promise((resolve, reject) => {
+        img.addEventListener("load", resolve, { once: true });
+        img.addEventListener("error", () => reject(new Error("The page logo failed to load.")), { once: true });
+      });
+    }
+
+    if (!img.naturalWidth || !img.naturalHeight) {
+      throw new Error("The logo has no image dimensions. Check the logo file.");
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Could not create a canvas for the logo.");
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL("image/png");
+    if (!dataUrl || dataUrl === "data:,") throw new Error("The logo could not be converted to PNG.");
+    return dataUrl;
+  } catch (canvasError) {
+    console.warn("Canvas conversion of the PDF logo failed; trying a direct image read.", canvasError);
+
+    // Fallback for browsers that restrict drawing a local image to canvas.
+    // This works when the page is served from the same origin (e.g. VS Code
+    // Live Server). Browsers generally block fetch() of file:// URLs.
+    const imageUrl = img.currentSrc || img.src || "logo.png";
+    const response = await fetch(imageUrl, { cache: "no-cache" });
+    if (!response.ok) throw new Error(`Could not read logo (${response.status}). Open this form with a local web server such as VS Code Live Server.`);
+    const blob = await response.blob();
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error("Could not convert the logo file for the PDF."));
+      reader.readAsDataURL(blob);
+    });
+  }
+}
+
+async function makePdf(record) {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("PDF library unavailable. Connect to the internet, reload this page, and try again.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  if (typeof doc.autoTable !== "function") {
+    alert("The PDF table library could not load. Reload the page and try again.");
+    return;
+  }
+
+  const data = record.data || {};
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const left = 14, right = 14;
+  const contentWidth = pageWidth - left - right;
+  let logoData = null;
+  try {
+    logoData = await getLogoDataUrl();
+  } catch (error) {
+    console.error("PDF logo loading failed:", error);
+    alert("The logo could not be prepared for the PDF. If you opened index.html directly, open it with VS Code Live Server and try again. Details are available in the browser console (F12). The PDF will still be generated.");
+  }
+  let y = 0;
+
+  const value = key => String(data[key] ?? "").trim();
+  const hasValue = v => String(v ?? "").trim() !== "";
+
+  function drawHeader() {
+    // Logo stays at the top-left; company details are aligned top-right.
+    if (logoData) {
+      try {
+        doc.addImage(logoData, "PNG", left, 6, 22, 22, "nextStepsCompanyLogo", "FAST");
+      } catch (error) {
+        console.error("jsPDF could not add the company logo:", error);
+        // Keep the rest of the PDF available even if the image format is unsupported.
+      }
+    }
+
+    const rightX = pageWidth - right;
+    doc.setTextColor(15, 43, 76);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text(COMPANY.name, rightX, 9, { align: "right" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.5);
+    const companyLines = [COMPANY.address, COMPANY.phone, COMPANY.whatsapp,COMPANY.email, COMPANY.website].filter(Boolean);
+    companyLines.forEach((line, i) => {
+      doc.text(String(line), rightX, 14 + i * 4, { align: "right" });
+    });
+
+    doc.setDrawColor(23, 105, 170);
+    doc.setLineWidth(0.45);
+    doc.line(left, 32, pageWidth - right, 32);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.setTextColor(15, 43, 76);
+    doc.text("PROFILE ASSESSMENT", left, 40);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(65, 75, 86);
+    const serialDisplay = record.serial && record.serial !== "DRAFT" ? record.serial : "SN: DRAFT";
+    doc.text(serialDisplay, pageWidth - right, 37, { align: "right" });
+    // Prefer the form's automatically captured assessment time, not PDF-download time.
+    const exactDateTime = value("Date & Time") || record.createdAt || new Date().toISOString();
+    doc.text(`Date & Time: ${formatExactDateTime(exactDateTime)}`, pageWidth - right, 42, { align: "right" });
+    y = 47;
+  }
+
+  function newPage() {
+    doc.addPage();
+    drawHeader();
+  }
+
+  function ensureSpace(height) {
+    if (y + height > pageHeight - 17) newPage();
+  }
+
+  function section(title) {
+    ensureSpace(11);
+    doc.setFillColor(205, 205, 205);
+    doc.rect(left, y, contentWidth, 7, "F");
+    doc.setTextColor(25, 25, 25);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.text(title, left + 2, y + 4.8);
+    y += 10;
+  }
+
+  function paragraph(text, options = {}) {
+    if (!hasValue(text)) return;
+    const indent = options.indent ?? 0;
+    const fontSize = options.fontSize ?? 8.2;
+    const bold = options.bold ?? false;
+    const italic = options.italic ?? false;
+    const color = options.color ?? [35, 35, 35];
+    const maxWidth = contentWidth - indent;
+    doc.setFont("helvetica", bold ? "bold" : italic ? "italic" : "normal");
+    doc.setFontSize(fontSize);
+    doc.setTextColor(...color);
+    const lines = doc.splitTextToSize(String(text), maxWidth);
+    const lineHeight = fontSize * 0.42 + 1.1;
+    ensureSpace(lines.length * lineHeight + 1.2);
+    doc.text(lines, left + indent, y);
+    y += lines.length * lineHeight + (options.gapAfter ?? 1.1);
+  }
+
+  function labelValue(label, val, options = {}) {
+    if (!hasValue(val)) return;
+    const labelWidth = options.labelWidth ?? 43;
+    const fontSize = options.fontSize ?? 8;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(fontSize);
+    const valueWidth = contentWidth - labelWidth - 2;
+    const lines = doc.splitTextToSize(String(val), valueWidth);
+    const lineHeight = fontSize * 0.42 + 1.15;
+    ensureSpace(Math.max(4, lines.length * lineHeight) + 0.8);
+    doc.setTextColor(55, 55, 55);
+    doc.text(String(label), left + (options.indent ?? 0), y);
+    doc.setTextColor(25, 25, 25);
+    doc.text(lines, left + (options.indent ?? 0) + labelWidth, y);
+    y += Math.max(4, lines.length * lineHeight) + 0.8;
+  }
+
+function drawCompactEnglishLine(items) {
+  const fontSize = 7.8;
+  const lineHeight = 4.5;
+  const startX = left;
+  const maxX = pageWidth - right;
+  let x = startX;
+
+  doc.setFontSize(fontSize);
+  doc.setTextColor(35, 35, 35);
+
+  // Keep each label bold and its corresponding value regular.
+  items.forEach((item, index) => {
+    const parts = [
+      { text: item.label, bold: true },
+      // Bold the selected test name as well as its label; keep scores regular.
+      { text: item.value, bold: String(item.label).trim() === "Test Type:" }
+    ];
+
+    parts.forEach(part => {
+      doc.setFont("helvetica", part.bold ? "bold" : "normal");
+
+      const text = part.text;
+      const textWidth = doc.getTextWidth(text);
+
+      if (x + textWidth > maxX) {
+        y += lineHeight;
+        x = startX;
+        ensureSpace(lineHeight + 1);
+      }
+
+      doc.text(text, x, y);
+      x += textWidth;
+    });
+
+    // Separator between fields, except after the last field.
+    if (index < items.length - 1) {
+      const separator = " | ";
+      doc.setFont("helvetica", "normal");
+      const separatorWidth = doc.getTextWidth(separator);
+
+      if (x + separatorWidth > maxX) {
+        y += lineHeight;
+        x = startX;
+        ensureSpace(lineHeight + 1);
+      }
+
+      doc.text(separator, x, y);
+      x += separatorWidth;
+    }
+  });
+
+  y += lineHeight + 1;
+}
+  function footerAllPages() {
+    const total = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= total; p++) {
+      doc.setPage(p);
+      doc.setDrawColor(210, 218, 226);
+      doc.setLineWidth(0.25);
+      doc.line(left, pageHeight - 12, pageWidth - right, pageHeight - 12);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7);
+      doc.setTextColor(100, 116, 139);
+      doc.text(COMPANY.name, left, pageHeight - 7);
+      doc.text(`Page ${p} of ${total}`, pageWidth - right, pageHeight - 7, { align: "right" });
+    }
+  }
+
+  drawHeader();
+
+  section("Personal Information");
+
+  // Client name on the left and mobile number on the right.
+  const personalLeftX = left;
+  const personalRightX = left + contentWidth / 2 + 3;
+  const personalColWidth = contentWidth / 2 - 3;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(55, 55, 55);
+  doc.text(" Name:", personalLeftX, y);
+  doc.text("Mobile Number:", personalRightX, y);
+  doc.setTextColor(25, 25, 25);
+  const clientLines = doc.splitTextToSize(value("Client Name") || "—", personalColWidth - 23);
+  const mobileLines = doc.splitTextToSize(value("Mobile Number") || "—", personalColWidth - 25);
+ 
+
+doc.text(clientLines, personalLeftX + 23, y);
+doc.text(mobileLines, personalRightX + 25, y);
+
+y += Math.max(
+  5,
+  Math.max(clientLines.length, mobileLines.length) * 4.5
+) + 1;
+
+// Display the counsellor name in Personal Information.
+labelValue("Counsellor Name:", value("Counsellor Name"), {
+  labelWidth: 30,
+  fontSize: 8,
+  bold: true
+});
+
+  section("Educational Qualification");
+  const educationColumns = [
+    { key: "Qualification", title: "Qualification", width: 27 },
+    { key: "Major / Subject", title: "Major / Subject", width: 29 },
+    { key: "Passing Year", title: "Passing Year", width: 17 },
+    { key: "Result", title: "Result", width: 18 },
+    { key: "Awarding Authority", title: "Awarding Authority", width: 30 },
+    { key: "Additional Details", title: "Additional Details", width: "auto" }
+  ];
+
+const educationRows = [];
+
+let savedEducation = [];
+
+if (Array.isArray(data.education)) {
+  savedEducation = data.education;
+} else if (data.education && typeof data.education === "object") {
+  // Compatibility with older saved records.
+  savedEducation = ["Level 1", "Level 2", "Level 3"]
+    .map(level => data.education[level])
+    .filter(Boolean);
+}
+
+savedEducation.forEach((fields, index) => {
+  if (!educationColumns.some(col => hasValue(fields[col.key]))) {
+    return;
+  }
+
+  educationRows.push({
+    level: `Qualification ${index + 1}`,
+    fields
+  });
+});
+
+
+  if (educationRows.length) {
+    // Include only columns with information and let AutoTable wrap text and
+    // calculate row heights automatically from the entered content.
+    const activeEducationColumns = educationColumns.filter(col =>
+      educationRows.some(row => hasValue(row.fields[col.key]))
+    );
+    doc.autoTable({
+      startY: y,
+      margin: { left, right },
+      head: [["Level", ...activeEducationColumns.map(col => col.title)]],
+      body: educationRows.map(row => [
+        row.level,
+        ...activeEducationColumns.map(col => hasValue(row.fields[col.key]) ? String(row.fields[col.key]) : "—")
+      ]),
+      theme: "grid",
+      styles: {
+        font: "helvetica",
+        fontSize: 7,
+        cellPadding: 2,
+        overflow: "linebreak",
+        valign: "top",
+        textColor: [35, 35, 35],
+        lineColor: [205, 215, 225],
+        lineWidth: 0.2
+      },
+      headStyles: {
+        fillColor: [23, 105, 170],
+        textColor: [255, 255, 255],
+        fontStyle: "bold"
+      },
+      columnStyles: { 0: { cellWidth: 15, fontStyle: "bold" } },
+      tableWidth: "auto",
+      rowPageBreak: "auto"
+    });
+    y = doc.lastAutoTable.finalY + 4;
+  } else {
+    paragraph("No educational qualifications entered.");
+  }
+
+ 
+
+
+section("English Language Proficiency Test");
+
+const englishTest = value("English Test");
+
+const englishScoreItems = [
+  { label: "Test Type: ", value: englishTest },
+  { label: "Overall: ", value: value("English Overall") },
+  { label: "Listening (L): ", value: value("English Listening") },
+  { label: "Reading (R): ", value: value("English Reading") },
+  { label: "Writing (W): ", value: value("English Writing") },
+  { label: "Speaking (S): ", value: value("English Speaking") }
+].filter(item => hasValue(item.value));
+
+if (englishScoreItems.length) {
+  drawCompactEnglishLine(englishScoreItems);
+} else {
+  paragraph("No English test details entered.");
+}
+
+  // drawCompactEnglishLine/paragraph already advance y; no AutoTable exists here.
+
+  section("Destinations & Eligibility Assessment");
+  const country = value("Intended Country");
+  const level = value("Intended Course Level");
+  const course = value("Eligibility Course");
+  const university = value("University");
+ 
+if (hasValue(country) || hasValue(level)) {
+  ensureSpace(6);
+
+  const fontSize = 8.2;
+  const midX = left + contentWidth / 2;
+
+  // Left side: Intended Country
+  if (hasValue(country)) {
+    doc.setFontSize(fontSize);
+    doc.setTextColor(45, 45, 45);
+    doc.setFont("helvetica", "bold");
+    doc.text("Intended Country: ", left, y);
+
+    const labelWidth = doc.getTextWidth("Intended Country: ");
+
+    doc.setFont("helvetica", "normal");
+    doc.text(country, left + labelWidth, y);
+  }
+
+  // Right side: Intended Course Level
+  if (hasValue(level)) {
+    const label = "Intended Course: ";
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(fontSize);
+    const labelWidth = doc.getTextWidth(label);
+
+    doc.setFont("helvetica", "normal");
+    const valueWidth = doc.getTextWidth(level);
+
+    const startX = Math.max(
+      midX,
+      pageWidth - right - labelWidth - valueWidth
+    );
+
+    doc.setFont("helvetica", "bold");
+    doc.text(label, startX, y);
+
+    doc.setFont("helvetica", "normal");
+    doc.text(level, startX + labelWidth, y);
+  }
+
+  y += 5;
+}
+  if (hasValue(course) || hasValue(university)) {
+    paragraph([course, university ? `(${university})` : ""].filter(Boolean).join(" "), { bold: true, fontSize: 8.5 });
+  }
+  [
+    ["Tuition Fee", value("Eligibility Tuition Fee")],
+    ["Scholarships", value("Scholarships")],
+    ["Duration", value("Duration")],
+    ["Next Intake", value("Next Intake")]
+  ].forEach(([k, v]) => labelValue(k, v));
+
+ 
+section("Approximate Expenses");
+
+const insuranceType = value("Insurance Type");
+const insuranceAmount = value("Insurance Fee Amount");
+const expenseAdditionalDetails = value("Expense Additional Details");
+const insuranceLabelMap = {
+  "General Insurance": "Insurance fee",
+  "IHS (UK)": "IHS fee",
+  "SEVIS (USA)": "SEVIS fee",
+  "OSHC (AUS)": "OSHC fee"
+};
+const insurancePdfLabel = insuranceLabelMap[insuranceType] || insuranceType;
+
+const expenseItems = [
+  ["Application Processing Fee", value("Application Processing Fee")],
+  ["University Application Fee", value("University Application Fee")],
+  ["Tuition Fee Deposit", value("Tuition Fee Deposit")],
+  [
+    insurancePdfLabel,
+    insuranceAmount
+  ],
+  ["Embassy / Visa Fee", value("Embassy Visa Fee")],
+  ["Visa Documentation", value("Visa Documentation")],
+  [
+    "Service Fee (After Visa Approval)",
+    value("Service Fee After Visa Approval")
+  ]
+].filter(([label, amount]) =>
+  hasValue(label) && hasValue(amount)
+);
+
+if (expenseItems.length) {
+  expenseItems.forEach(([label, amount]) => {
+    ensureSpace(6);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.8);
+    doc.setTextColor(45, 45, 45);
+
+    const labelLines = doc.splitTextToSize(
+      String(label) + ":",
+      contentWidth * 0.55
+    );
+
+    const amountLines = doc.splitTextToSize(
+      String(amount),
+      contentWidth * 0.4
+    );
+
+    const rowHeight = Math.max(
+      labelLines.length,
+      amountLines.length
+    ) * 4 + 1;
+
+    ensureSpace(rowHeight);
+
+    doc.text(labelLines, left + 3, y);
+    doc.text(amountLines, pageWidth - right - 1, y, {
+      align: "right"
+    });
+
+    y += rowHeight;
+  });
+} else {
+  paragraph("No expenses entered.");
+}
+
+// Display expense-specific additional details in the PDF.
+if (hasValue(expenseAdditionalDetails)) {
+  y += 2;
+  paragraph("Expense Additional Details", {
+    bold: true,
+    fontSize: 8.5
+  });
+
+  paragraph(expenseAdditionalDetails, {
+    fontSize: 8.2
+  });
+}
+
+ 
+  // Additional Information — appears first (above)
+  if (hasValue(value("Additional Details"))) {
+    section("Additional Information");
+    paragraph(value("Additional Details"), { fontSize: 8.2 });
+  }
+
+  // Special Note / Remarks — appears second (below)
+  section("Special Note / Remarks");
+  paragraph(value("Counsellor Remarks"), { fontSize: 8.2 });
+
+  if (!hasValue(value("Counsellor Remarks"))) {
+    paragraph("No remarks entered.", { fontSize: 8.2 });
+  }
+
+  footerAllPages();
+  const safeName = String(value("Client Name") || "Client")
+    .replace(/[^a-z0-9-_ ]/gi, "").trim().replace(/\s+/g, "-") || "Client";
+  doc.save(`Profile-Assessment-${safeName}-${dateStamp()}.pdf`);
+  showStatus("PDF generated and downloaded.");
+}
+
+function downloadCurrentPDF() {
+  if (!$("clientName").value.trim()) {
+    showPage(1);
+    showStatus("Please enter the Client Name before exporting the PDF.", true);
+    $("clientName").focus();
+    return;
+  }
+
+  const id = $("recordId").value;
+  const savedRecord = records.find(r => r.id === id);
+
+  const record = {
+    id: id || "draft",
+    serial: savedRecord?.serial || "DRAFT",
+    createdAt: savedRecord?.createdAt || new Date().toISOString(),
+    data: getFormData()
+  };
+
+  makePdf(record);
+}
+
+$("pdfBtn").addEventListener("click", downloadCurrentPDF);
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+renderEducationLevels();
+
+$("assessmentDate").value = nowLocalDateTime();
+
+updateEnglishRules();
+updateProcessingFee();
+renderRecords();
+showPage(1);
+</script>
+
+</body>
+</html>
